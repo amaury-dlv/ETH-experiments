@@ -91,11 +91,11 @@ contract Amori is ERC20 {
         uint256 amount = _mintableSupply / _mintDivisor;
         _mintDivisor += 1;
 
-        require(amount > 0);
-
         _mintableSupply -= amount;
         _totalSupply += amount;
         _balances[_to] += amount;
+
+        emit Transfer(address(0), _to, amount);
 
         return true;
     }

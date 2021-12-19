@@ -19,6 +19,7 @@ contract AmoCoin is ERC20 {
     mapping(address => uint256) private _balances;
     mapping(address => mapping(address => uint256)) private _allowances;
 
+    uint256 private _available;
     uint256 private _totalSupply;
     string private _name;
     string private _symbol;
@@ -72,5 +73,14 @@ contract AmoCoin is ERC20 {
 
     function allowance(address _owner, address _spender) external view returns (uint256 remaining) {
         return _allowances[_owner][_spender];
+    }
+
+    function give(address _to, uint256 _value) external returns (bool success) {
+        require(_available > 10);
+        uint256 allowed = _available / 10;
+        require(_value <= allowed);
+        _available -= _value;
+        _balances[_to] += _value;
+        return true;
     }
 }

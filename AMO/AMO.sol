@@ -32,16 +32,16 @@ contract AmoCoin is ERC20 {
         _symbol = "AMO";
     }
 
-    function name() external view returns (string memory) { return _name; }
-    function symbol() external view returns (string memory) { return _symbol; }
-    function decimals() external pure returns (uint8) { return 0; }
-    function totalSupply() external view returns (uint256) { return _totalSupply; }
+    function name() override external view returns (string memory) { return _name; }
+    function symbol() override external view returns (string memory) { return _symbol; }
+    function decimals() override external pure returns (uint8) { return 0; }
+    function totalSupply() override external view returns (uint256) { return _totalSupply; }
 
-    function balanceOf(address _owner) external view returns (uint256 balance) {
+    function balanceOf(address _owner) override external view returns (uint256 balance) {
         return _balances[_owner];
     }
 
-    function transfer(address _to, uint256 _value) external returns (bool success) {
+    function transfer(address _to, uint256 _value) override external returns (bool success) {
         require(_balances[msg.sender] >= _value);
 
         _balances[msg.sender] -= _value;
@@ -52,7 +52,7 @@ contract AmoCoin is ERC20 {
         return true;
     }
 
-    function transferFrom(address _from, address _to, uint256 _value) external returns (bool success) {
+    function transferFrom(address _from, address _to, uint256 _value) override external returns (bool success) {
         require(_balances[_from] >= _value);
         require(_allowances[_from][msg.sender] >= _value);
 
@@ -65,7 +65,7 @@ contract AmoCoin is ERC20 {
         return true;
     }
 
-    function approve(address _spender, uint256 _value) external returns (bool success) {
+    function approve(address _spender, uint256 _value) override external returns (bool success) {
         _allowances[msg.sender][_spender] = _value;
 
         emit Approval(msg.sender, _spender, _value);

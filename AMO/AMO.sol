@@ -17,19 +17,27 @@ interface ERC20 {
     event Transfer(address indexed from, address indexed to, uint tokens);
 }
 
-contract AmoCoin is ERC20 {
+contract Amori is ERC20 {
     mapping(address => uint256) private _balances;
     mapping(address => mapping(address => uint256)) private _allowances;
 
-    uint256 private _available;
-    uint256 private _totalSupply;
+    uint256 private _mintableSupply;
+    uint256 private _mintDivisor;
+
     string private _name;
     string private _symbol;
+    uint256 private _totalSupply;
+    uint256 private _maxSupply;
 
     constructor() {
-        _totalSupply = 21000000;
-        _name = "AmoCoin";
-        _symbol = "AMO";
+        _maxSupply = 21000000;
+        _totalSupply = 4000000;
+        _name = "Amori";
+        _symbol = "AMORI";
+
+        _balances[msg.sender] = _totalSupply;
+        _mintableSupply = _maxSupply - _totalSupply;
+        _mintDivisor = 10;
     }
 
     function name() override external view returns (string memory) { return _name; }
@@ -73,16 +81,22 @@ contract AmoCoin is ERC20 {
         return true;
     }
 
-    function allowance(address _owner, address _spender) external view returns (uint256 remaining) {
+    function allowance(address _owner, address _spender) override external view returns (uint256 remaining) {
         return _allowances[_owner][_spender];
     }
 
-    function give(address _to, uint256 _value) external returns (bool success) {
-        require(_available > 10);
-        uint256 allowed = _available / 10;
-        require(_value <= allowed);
-        _available -= _value;
-        _balances[_to] += _value;
+    function mint(address _to) external returns (bool success) {
+        require(_mintableSupply > 0);
+
+        uint256 amount = _mintableSupply / _mintDivisor;
+        _mintDivisor += 1;
+
+        require(amount > 0);
+
+        _mintableSupply -= amount;
+        _totalSupply += amount;
+        _balances[_to] += amount;
+
         return true;
     }
 }

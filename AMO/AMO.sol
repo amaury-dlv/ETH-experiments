@@ -38,6 +38,8 @@ contract Amori is ERC20 {
         _balances[msg.sender] = _totalSupply;
         _mintableSupply = _maxSupply - _totalSupply;
         _mintDivisor = 10;
+
+        emit Transfer(address(0), msg.sender, _totalSupply);
     }
 
     function name() override external view returns (string memory) { return _name; }
